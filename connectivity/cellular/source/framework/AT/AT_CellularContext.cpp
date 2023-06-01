@@ -384,7 +384,7 @@ bool AT_CellularContext::get_context()
     if (apn_len > 0 && !_apn) {
         memcpy(_found_apn, apn, apn_len + 1);
     }
-
+    tr_info("APN = %s", _apn);
     tr_info("Found PDP context %d", _cid);
 
     return true;
