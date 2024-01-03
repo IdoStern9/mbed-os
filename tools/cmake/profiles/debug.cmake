@@ -17,7 +17,6 @@ function(mbed_set_profile_options target mbed_toolchain)
 
         list(APPEND profile_cxx_compile_options
             "-c"
-            "-fno-rtti"
             "-Wvla"
             "-Og"
         )
@@ -57,7 +56,6 @@ function(mbed_set_profile_options target mbed_toolchain)
         )
 
         list(APPEND profile_cxx_compile_options
-            "-fno-rtti"
             "-fno-c++-static-destructors"
             "-O1"
         )
