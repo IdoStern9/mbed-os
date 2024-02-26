@@ -33,7 +33,7 @@ TimerBase::TimerBase(const ticker_data_t *data) : TimerBase(data, !data->interfa
 {
 }
 
-TimerBase::TimerBase(const ticker_data_t *data, bool lock_deepsleep) : _ticker_data(data), _lock_deepsleep(lock_deepsleep)
+TimerBase::TimerBase(const ticker_data_t *data, bool lock_deepsleep, const char* name) : _ticker_data(data), _lock_deepsleep(lock_deepsleep), _name(name)
 {
     reset();
 }
@@ -46,7 +46,7 @@ TimerBase::TimerBase(const TimerBase &t) : TimerBase(t, CriticalSectionLock{})
 {
     // If running, new copy needs an extra lock
     if (_running && _lock_deepsleep) {
-        sleep_manager_lock_deep_sleep();
+        sleep_manager_obj_lock_deep_sleep(_name);
     }
 }
 
@@ -62,7 +62,7 @@ TimerBase::~TimerBase()
 {
     if (_running) {
         if (_lock_deepsleep) {
-            sleep_manager_unlock_deep_sleep();
+            sleep_manager_obj_unlock_deep_sleep(_name);
         }
     }
 }
@@ -72,7 +72,7 @@ void TimerBase::start()
     CriticalSectionLock lock;
     if (!_running) {
         if (_lock_deepsleep) {
-            sleep_manager_lock_deep_sleep();
+            sleep_manager_obj_lock_deep_sleep(_name);
         }
         _start = _ticker_data.now();
         _running = true;
@@ -85,7 +85,7 @@ void TimerBase::stop()
     _time += slicetime();
     if (_running) {
         if (_lock_deepsleep) {
-            sleep_manager_unlock_deep_sleep();
+            sleep_manager_obj_unlock_deep_sleep(_name);
         }
     }
     _running = false;
@@ -139,12 +139,12 @@ TimerBase::operator float() const
     return duration<float>(elapsed_time()).count();
 }
 
-Timer::Timer() : TimerBase(get_us_ticker_data(), true)
+Timer::Timer(const char* name) : TimerBase(get_us_ticker_data(), true, name)
 {
 }
 
 #if DEVICE_LPTICKER
-LowPowerTimer::LowPowerTimer() : TimerBase(get_lp_ticker_data(), false)
+LowPowerTimer::LowPowerTimer(const char* name) : TimerBase(get_lp_ticker_data(), false, name)
 {
 }
 #endif

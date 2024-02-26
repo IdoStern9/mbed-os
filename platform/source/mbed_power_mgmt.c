@@ -139,7 +139,7 @@ static sleep_statistic_t *sleep_tracker_add(const char *const filename)
     return NULL;
 }
 
-static void sleep_tracker_print_stats(void)
+void sleep_tracker_print_stats(void)
 {
     if (sleep_manager_can_deep_sleep()) {
         mbed_error_printf("deepsleep unlocked");

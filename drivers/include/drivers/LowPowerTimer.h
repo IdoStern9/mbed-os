@@ -38,7 +38,7 @@ namespace mbed {
  */
 class LowPowerTimer : public TimerBase {
 public:
-    LowPowerTimer();
+    LowPowerTimer(const char* name = "LowPowerTimer");
 };
 
 /** @}*/
