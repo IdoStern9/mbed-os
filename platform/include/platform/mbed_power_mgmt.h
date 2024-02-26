@@ -102,12 +102,27 @@ void sleep_tracker_unlock(const char *const filename, int line);
         sleep_tracker_lock(MBED_FILENAME, __LINE__); \
     } while (0);
 
+#define sleep_manager_obj_lock_deep_sleep(obj_name)  \
+    do                                               \
+    {                                                \
+        sleep_manager_lock_deep_sleep_internal();    \
+        sleep_tracker_lock(obj_name, __LINE__);      \
+    } while (0);
+
 #define sleep_manager_unlock_deep_sleep()              \
     do                                                 \
     {                                                  \
         sleep_manager_unlock_deep_sleep_internal();    \
         sleep_tracker_unlock(MBED_FILENAME, __LINE__); \
     } while (0);
+
+#define sleep_manager_obj_unlock_deep_sleep(obj_name)  \
+    do                                                 \
+    {                                                  \
+        sleep_manager_unlock_deep_sleep_internal();    \
+        sleep_tracker_unlock(obj_name, __LINE__);      \
+    } while (0);
+
 
 #else
 
@@ -116,6 +131,12 @@ void sleep_tracker_unlock(const char *const filename, int line);
 
 #define sleep_manager_unlock_deep_sleep() \
     sleep_manager_unlock_deep_sleep_internal()
+
+#define sleep_manager_obj_lock_deep_sleep(obj_name)  \
+    sleep_manager_lock_deep_sleep_internal(); 
+
+#define sleep_manager_obj_unlock_deep_sleep(obj_name)  \
+    sleep_manager_unlock_deep_sleep_internal();    
 
 #endif // MBED_SLEEP_TRACING_ENABLED
 
@@ -239,6 +260,8 @@ MBED_NORETURN static inline void system_reset(void)
 {
     NVIC_SystemReset();
 }
+
+void sleep_tracker_print_stats(void);
 
 #ifdef __cplusplus
 }

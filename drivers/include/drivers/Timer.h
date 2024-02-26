@@ -57,6 +57,7 @@ class CriticalSectionLock;
 class TimerBase {
 
 public:
+    const char* _name;
     /** Start the timer
      */
     void start();
@@ -111,7 +112,7 @@ public:
 #if !defined(DOXYGEN_ONLY)
 protected:
     TimerBase(const ticker_data_t *data);
-    TimerBase(const ticker_data_t *data, bool lock_deepsleep);
+    TimerBase(const ticker_data_t *data, bool lock_deepsleep, const char *name = "Timer.cpp");
     TimerBase(const TimerBase &t);
     TimerBase(TimerBase &&t);
     ~TimerBase();
@@ -135,7 +136,7 @@ private:
 
 class Timer : public TimerBase {
 public:
-    Timer();
+    Timer(const char* name = "default timer");
 };
 /** @}*/
 
