@@ -35,6 +35,9 @@
 /* Round up VECTORS_SIZE to 8 bytes */
 #define VECTORS_SIZE  (((NVIC_NUM_VECTORS * 4) + 7) & 0xFFFFFFF8)
 
+M_CRASH_DATA_RAM_SIZE = 0x100;
+M_LAST_CRASH_TIME_SIZE = 0x20;
+
 MEMORY
 {
     FLASH (rx)   : ORIGIN = MBED_APP_START, LENGTH = MBED_APP_SIZE
@@ -189,6 +192,29 @@ SECTIONS
     .stack_dummy (COPY):
     {
         *(.stack*)
+    } > RAM
+
+    .crash_data_ram :
+    {
+        . = ALIGN(8);
+        __CRASH_DATA_RAM__ = .;
+        __CRASH_DATA_RAM_START__ = .; /* Create a global symbol at data start */
+        KEEP(*(.keep.crash_data_ram))
+        *(.m_crash_data_ram)     /* This is a user defined section */
+        . += M_CRASH_DATA_RAM_SIZE;
+        . = ALIGN(8);
+        __CRASH_DATA_RAM_END__ = .; /* Define a global symbol at data end */
+    } > RAM        
+
+    .last_crash_time :
+    {
+        . = ALIGN(8);
+        __LAST_CRASH_TIME_START__ = .; /* Create a global symbol at data start */
+        KEEP(*(.keep.last_crash_time))
+        *(.last_crash_time)     /* This is a user defined section */
+        . += M_LAST_CRASH_TIME_SIZE; /* Size of the LAST_CRASH_TIME section */
+        . = ALIGN(8);
+        __LAST_CRASH_TIME_END__ = .; /* Define a global symbol at data end */
     } > RAM
 
     /* Set stack top to end of RAM, and stack limit move down by
