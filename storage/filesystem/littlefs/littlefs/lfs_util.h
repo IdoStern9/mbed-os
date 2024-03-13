@@ -47,6 +47,7 @@ extern "C"
 #ifdef __MBED__
 #include "mbed_debug.h"
 #include "mbed_assert.h"
+#include "mbed_error.h"
 #include "cmsis_compiler.h"
 #else
 #define MBED_LFS_ENABLE_INFO   false
@@ -94,7 +95,18 @@ extern "C"
 #if !defined(LFS_NO_ASSERT) && MBED_LFS_ENABLE_ASSERT
 #define LFS_ASSERT(test) assert(test)
 #elif !defined(LFS_NO_ASSERT) && !defined(MBED_LFS_ENABLE_ASSERT)
-#define LFS_ASSERT(test) MBED_ASSERT(test)
+
+// Use mbed assert for file system assertions
+
+// Error code for file system errors
+#define CUSTOM_FS_ERROR_CODE 0X2001
+
+// Custom assert for file system
+#define CUSTOM_LFS_ASSERT(test) { if (!(test)) { MBED_ERROR(MBED_MAKE_ERROR(MBED_MODULE_FILESYSTEM, CUSTOM_FS_ERROR_CODE), #test); } }
+
+// Use custom assert
+#define LFS_ASSERT(test) CUSTOM_LFS_ASSERT(test)
+
 #else
 #define LFS_ASSERT(test)
 #endif
