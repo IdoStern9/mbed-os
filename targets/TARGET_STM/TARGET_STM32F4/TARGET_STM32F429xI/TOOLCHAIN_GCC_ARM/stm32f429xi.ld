@@ -36,7 +36,7 @@
 #define VECTORS_SIZE  (((NVIC_NUM_VECTORS * 4) + 7) & 0xFFFFFFF8)
 
 M_CRASH_DATA_RAM_SIZE = 0x100;
-M_LAST_CRASH_TIME_SIZE = 0x20;
+M_LAST_RESET_EVENT_SIZE = 0x150;
 
 MEMORY
 {
@@ -130,15 +130,15 @@ SECTIONS
         __CRASH_DATA_RAM_END__ = .; /* Define a global symbol at data end */
     } > RAM        
 
-    .last_crash_time :
+    .last_reset_event :
     {
         . = ALIGN(8);
-        __LAST_CRASH_TIME_START__ = .; /* Create a global symbol at data start */
-        KEEP(*(.keep.last_crash_time))
-        *(.last_crash_time)     /* This is a user defined section */
-        . += M_LAST_CRASH_TIME_SIZE; /* Size of the LAST_CRASH_TIME section */
+        __LAST_RESET_EVENT_START__ = .; /* Create a global symbol at data start */
+        KEEP(*(.keep.last_reset_event))
+        *(.last_reset_event)     /* This is a user defined section */
+        . += M_LAST_RESET_EVENT_SIZE; /* Size of the LAST_RESET_EVENT section */
         . = ALIGN(8);
-        __LAST_CRASH_TIME_END__ = .; /* Define a global symbol at data end */
+        __LAST_RESET_EVENT_END__ = .; /* Define a global symbol at data end */
     } > RAM
 
     .data : AT (__etext)
