@@ -33,7 +33,7 @@ TimerBase::TimerBase(const ticker_data_t *data) : TimerBase(data, !data->interfa
 {
 }
 
-TimerBase::TimerBase(const ticker_data_t *data, bool lock_deepsleep, const char* name) : _ticker_data(data), _lock_deepsleep(lock_deepsleep), _name(name)
+TimerBase::TimerBase(const ticker_data_t *data, bool lock_deepsleep, const char* name) : _name(name), _ticker_data(data), _lock_deepsleep(lock_deepsleep)
 {
     reset();
 }
