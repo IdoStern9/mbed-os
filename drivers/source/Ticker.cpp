@@ -31,7 +31,7 @@ TickerBase::TickerBase(const ticker_data_t *data) : TickerBase(data, !data->inte
 }
 
 // When low power ticker is in use, then do not disable deep sleep.
-TickerBase::TickerBase(const ticker_data_t *data, bool lock_deepsleep) : TimerEvent(data),  _lock_deepsleep(lock_deepsleep)
+TickerBase::TickerBase(const ticker_data_t *data, bool lock_deepsleep, const char* name) : TimerEvent(data),  _lock_deepsleep(lock_deepsleep), _name(name)
 {
 }
 
@@ -41,7 +41,7 @@ void TickerBase::detach()
     remove();
     // unlocked only if we were attached (we locked it) and this is not low power ticker
     if (_function && _lock_deepsleep) {
-        sleep_manager_unlock_deep_sleep();
+        sleep_manager_obj_unlock_deep_sleep(_name);
     }
 
     _function = 0;
@@ -73,7 +73,7 @@ void TickerBase::attach(Callback<void()> func, microseconds t)
     CriticalSectionLock lock;
     // lock only for the initial callback setup and this is not low power ticker
     if (!_function && _lock_deepsleep) {
-        sleep_manager_lock_deep_sleep();
+        sleep_manager_obj_lock_deep_sleep(_name);
     }
     _function = func;
     setup(t);
@@ -84,7 +84,7 @@ void TickerBase::attach_us(Callback<void()> func, us_timestamp_t t)
     CriticalSectionLock lock;
     // lock only for the initial callback setup and this is not low power ticker
     if (!_function && _lock_deepsleep) {
-        sleep_manager_lock_deep_sleep();
+        sleep_manager_obj_lock_deep_sleep(_name);
     }
     _function = func;
     setup(microseconds{t});
@@ -95,18 +95,18 @@ void TickerBase::attach_absolute(Callback<void()> func, TickerDataClock::time_po
     CriticalSectionLock lock;
     // lock only for the initial callback setup and this is not low power ticker
     if (!_function && _lock_deepsleep) {
-        sleep_manager_lock_deep_sleep();
+        sleep_manager_obj_lock_deep_sleep(_name);
     }
     _function = func;
     setup_absolute(abs_time);
 }
 
-Ticker::Ticker() : TickerBase(get_us_ticker_data(), true)
+Ticker::Ticker(const char* name) : TickerBase(get_us_ticker_data(), true, name)
 {
 }
 
 #if DEVICE_LPTICKER
-LowPowerTicker::LowPowerTicker() : TickerBase(get_lp_ticker_data(), false)
+LowPowerTicker::LowPowerTicker(const char* name) : TickerBase(get_lp_ticker_data(), false, name)
 {
 }
 #endif

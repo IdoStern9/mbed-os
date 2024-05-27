@@ -1,7 +1,7 @@
 {
     "GCC_ARM": {
         "common": ["-Wall", "-Wextra",
-                   "-Wno-unused-parameter", "-Wno-missing-field-initializers",
+                   "-Wno-unused-parameter", "-Wmissing-field-initializers",
                    "-fmessage-length=0", 
                    "-ffunction-sections", "-fdata-sections", "-funsigned-char",
                    "-MMD",

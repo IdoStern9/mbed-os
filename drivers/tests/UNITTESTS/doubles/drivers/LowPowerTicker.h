@@ -28,7 +28,7 @@ namespace mbed {
 class LowPowerTicker {
 
 public:
-    LowPowerTicker()
+    LowPowerTicker(const char * name)
     {
     }
 
