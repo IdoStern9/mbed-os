@@ -72,6 +72,8 @@ namespace mbed {
  */
 class TickerBase : public TimerEvent, private NonCopyable<TickerBase> {
 public:
+    const char* _name;
+
     /** Attach a function to be called by the Ticker, specifying the interval in seconds
      *
      *  The method forwards its arguments to attach_us() rather than copying them which
@@ -128,7 +130,7 @@ public:
 #if !defined(DOXYGEN_ONLY)
 protected:
     TickerBase(const ticker_data_t *data);
-    TickerBase(const ticker_data_t *data, bool lock_deepsleep);
+    TickerBase(const ticker_data_t *data, bool lock_deepsleep, const char *name = "Ticker.cpp");
 
     ~TickerBase()
     {
@@ -160,7 +162,7 @@ private:
 
 class Ticker : public TickerBase {
 public:
-    Ticker();
+    Ticker(const char *name = "default ticker");
 };
 /** @}*/
 

@@ -41,7 +41,7 @@ namespace mbed {
  */
 class LowPowerTicker : public TickerBase {
 public:
-    LowPowerTicker();
+    LowPowerTicker(const char* name = "default LP Ticker");
 };
 
 /** @}*/

@@ -31,7 +31,7 @@ TickerBase::TickerBase(const ticker_data_t *data) : TickerBase(data, !data->inte
 }
 
 // When low power ticker is in use, then do not disable deep sleep.
-TickerBase::TickerBase(const ticker_data_t *data, bool lock_deepsleep) : TimerEvent(data),  _lock_deepsleep(lock_deepsleep)
+TickerBase::TickerBase(const ticker_data_t *data, bool lock_deepsleep, const char* name) : TimerEvent(data),  _lock_deepsleep(lock_deepsleep), _name(name)
 {
 }
 
@@ -101,12 +101,12 @@ void TickerBase::attach_absolute(Callback<void()> func, TickerDataClock::time_po
     setup_absolute(abs_time);
 }
 
-Ticker::Ticker() : TickerBase(get_us_ticker_data(), true)
+Ticker::Ticker(const char* name) : TickerBase(get_us_ticker_data(), true, name)
 {
 }
 
 #if DEVICE_LPTICKER
-LowPowerTicker::LowPowerTicker() : TickerBase(get_lp_ticker_data(), false)
+LowPowerTicker::LowPowerTicker(const char* name) : TickerBase(get_lp_ticker_data(), false, name)
 {
 }
 #endif
