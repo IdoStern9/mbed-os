@@ -279,6 +279,8 @@ private:
 };
 /** @}*/
 /** @}*/
+#define MAX_THREAD_COUNT 10
+extern Thread* global_thread_array[MAX_THREAD_COUNT];
 }
 #endif
 

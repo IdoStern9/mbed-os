@@ -44,6 +44,8 @@ namespace rtos {
 #define MBED_TZ_DEFAULT_ACCESS   0
 #endif
 
+Thread* global_thread_array[MAX_THREAD_COUNT] = {nullptr};
+
 void Thread::constructor(uint32_t tz_module, osPriority priority,
                          uint32_t stack_size, unsigned char *stack_mem, const char *name)
 {
@@ -63,6 +65,15 @@ void Thread::constructor(uint32_t tz_module, osPriority priority,
     _attr.name = name ? name : "application_unnamed_thread";
     _attr.stack_mem = reinterpret_cast<uint32_t *>(aligned_mem);
     _attr.tz_module = tz_module;
+
+    // add this thread to global threads array
+    int thread_count = MAX_THREAD_COUNT;
+    for (int i = 0; i < thread_count; i++) {
+        if (global_thread_array[i] == nullptr) {
+            global_thread_array[i] = this;
+            break;
+        }
+    }
 }
 
 void Thread::constructor(osPriority priority,
@@ -252,7 +263,7 @@ uint32_t Thread::stack_size() const
     _mutex.lock();
 
     if (_tid != nullptr) {
-        size = osThreadGetStackSize(_tid);
+        size = _attr.stack_size;
     }
 
     _mutex.unlock();
@@ -298,12 +309,13 @@ uint32_t Thread::max_stack() const
 
     if (_tid != nullptr) {
 #if defined(MBED_OS_BACKEND_RTX5)
-        mbed_rtos_storage_thread_t *thread = (mbed_rtos_storage_thread_t *)_tid;
         uint32_t high_mark = 0;
-        while ((((uint32_t *)(thread->stack_mem))[high_mark] == osRtxStackMagicWord) || (((uint32_t *)(thread->stack_mem))[high_mark] == osRtxStackFillPattern)) {
+        while ((((((uint32_t *)(_attr.stack_mem))[high_mark] == osRtxStackMagicWord) ||
+                 (((uint32_t *)(_attr.stack_mem))[high_mark] == osRtxStackFillPattern))) &&
+               (high_mark <= (_attr.stack_size / sizeof(uint32_t)))) {
             high_mark++;
         }
-        size = thread->stack_size - (high_mark * sizeof(uint32_t));
+        size = _attr.stack_size - (high_mark * sizeof(uint32_t));
 #else
         size = osThreadGetStackSize(_tid) - osThreadGetStackSpace(_tid);
 #endif
