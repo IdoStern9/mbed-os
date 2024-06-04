@@ -263,7 +263,7 @@ uint32_t Thread::stack_size() const
     _mutex.lock();
 
     if (_tid != nullptr) {
-        size = osThreadGetStackSize(_tid);
+        size = _attr.stack_size;
     }
 
     _mutex.unlock();
