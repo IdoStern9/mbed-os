@@ -357,6 +357,23 @@ void Thread::_thunk(void *thread_ptr)
     // rtos will release the mutex automatically
 }
 
+uint8_t get_thread_idx(osThreadId_t tid)
+{
+    // iterate through global threads array to find the index of the thread
+    for (int i = 0; i < MAX_THREAD_COUNT; i++) 
+    {
+        // check if the thread is not null
+        if (global_thread_array[i] == nullptr) {
+           break;
+        }
+
+        if (global_thread_array[i]->get_id() == tid) {
+            return i;
+        }
+    }
+    return -1;
+}
+
 }
 
 #endif

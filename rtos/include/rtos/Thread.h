@@ -281,6 +281,8 @@ private:
 /** @}*/
 #define MAX_THREAD_COUNT 30
 extern Thread* global_thread_array[MAX_THREAD_COUNT];
+uint8_t get_thread_idx(osThreadId_t tid);
+
 }
 #endif
 
