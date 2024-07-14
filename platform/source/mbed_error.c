@@ -311,7 +311,8 @@ WEAK MBED_NORETURN mbed_error_status_t mbed_error(mbed_error_status_t error_stat
     //Read report_error_ctx and check if CRC is correct for report_error_ctx
     if (report_error_ctx.crc_error_ctx == crc_val) {
         uint32_t current_reboot_count = report_error_ctx.error_reboot_count;
-        last_error_ctx.error_reboot_count = current_reboot_count + 1;
+        last_error_ctx.error_reboot_count = 1;
+        // last_error_ctx.error_reboot_count = current_reboot_count + 1;
     } else {
         last_error_ctx.error_reboot_count = 1;
     }
