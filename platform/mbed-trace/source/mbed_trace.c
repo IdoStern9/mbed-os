@@ -204,7 +204,7 @@ void mbed_trace_free(void)
     m_trace.trace_config = DEFAULT_TRACE_CONFIG;
     m_trace.filters_exclude = 0;
     m_trace.filters_include = 0;
-    m_trace.filters_length = DEFAULT_TRACE_FILTER_LENGTH;
+    m_trace.filters_length = DEFAULT_TRACE_FILTER_LENGTH*3;
     m_trace.line = 0;
     m_trace.line_length = DEFAULT_TRACE_LINE_LENGTH;
     m_trace.tmp_data = 0;
