@@ -96,6 +96,14 @@ public:
      */
     FileHandle *get_file_handle();
 
+    // print contents of a buffer to trace log
+    enum ATType {
+        AT_ERR,
+        AT_RX,
+        AT_TX
+    };
+
+    virtual void debug_print(const char *p, int len, ATType type);
     /** Locks the mutex for file handle if AT_HANDLER_MUTEX is defined.
      */
     void lock();
@@ -564,15 +572,6 @@ private: //Private functions
 
     // check is urc is already added
     bool find_urc_handler(const char *prefix);
-
-    // print contents of a buffer to trace log
-    enum ATType {
-        AT_ERR,
-        AT_RX,
-        AT_TX
-    };
-
-    void debug_print(const char *p, int len, ATType type);
 
 private: //Member variables
 
