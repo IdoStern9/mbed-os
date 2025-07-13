@@ -117,6 +117,29 @@ SECTIONS
     __etext = .;
     _sidata = .;
     
+    .crash_data_ram :
+    {
+        . = ALIGN(8);
+        __CRASH_DATA_RAM__ = .;
+        __CRASH_DATA_RAM_START__ = .; /* Create a global symbol at data start */
+        KEEP(*(.keep.crash_data_ram))
+        *(.m_crash_data_ram)     /* This is a user defined section */
+        . += M_CRASH_DATA_RAM_SIZE;
+        . = ALIGN(8);
+        __CRASH_DATA_RAM_END__ = .; /* Define a global symbol at data end */
+    } > RAM        
+
+    .last_reset_event :
+    {
+        . = ALIGN(8);
+        __LAST_RESET_EVENT_START__ = .; /* Create a global symbol at data start */
+        KEEP(*(.keep.last_reset_event))
+        *(.last_reset_event)     /* This is a user defined section */
+        . += M_LAST_RESET_EVENT_SIZE; /* Size of the LAST_RESET_EVENT section */
+        . = ALIGN(8);
+        __LAST_RESET_EVENT_END__ = .; /* Define a global symbol at data end */
+    } > RAM
+
     .data : AT (__etext)
     {
         __data_start__ = .;
@@ -192,29 +215,6 @@ SECTIONS
     .stack_dummy (COPY):
     {
         *(.stack*)
-    } > RAM
-
-    .crash_data_ram :
-    {
-        . = ALIGN(8);
-        __CRASH_DATA_RAM__ = .;
-        __CRASH_DATA_RAM_START__ = .; /* Create a global symbol at data start */
-        KEEP(*(.keep.crash_data_ram))
-        *(.m_crash_data_ram)     /* This is a user defined section */
-        . += M_CRASH_DATA_RAM_SIZE;
-        . = ALIGN(8);
-        __CRASH_DATA_RAM_END__ = .; /* Define a global symbol at data end */
-    } > RAM        
-
-    .last_reset_event :
-    {
-        . = ALIGN(8);
-        __LAST_RESET_EVENT_START__ = .; /* Create a global symbol at data start */
-        KEEP(*(.keep.last_reset_event))
-        *(.last_reset_event)     /* This is a user defined section */
-        . += M_LAST_RESET_EVENT_SIZE; /* Size of the LAST_RESET_EVENT section */
-        . = ALIGN(8);
-        __LAST_RESET_EVENT_END__ = .; /* Define a global symbol at data end */
     } > RAM
 
     /* Set stack top to end of RAM, and stack limit move down by
