@@ -141,6 +141,14 @@ static sleep_statistic_t *sleep_tracker_add(const char *const filename)
 
 void sleep_tracker_print_stats(void)
 {
+    // print every 1 second
+    static int count = 0;
+    count++;
+    if (count < 2000) {
+        return;
+    }
+    count = 0;
+
     if (sleep_manager_can_deep_sleep()) {
         mbed_error_printf("deepsleep unlocked");
 #ifdef MBED_DEBUG
