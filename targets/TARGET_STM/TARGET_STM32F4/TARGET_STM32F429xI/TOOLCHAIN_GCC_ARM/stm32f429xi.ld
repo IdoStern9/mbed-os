@@ -201,6 +201,25 @@ SECTIONS
         _ebss = .;
     } > RAM
 
+    /* CPU-only statics/stacks relocated to the 64 KB Core-Coupled Memory (CCM)
+     * to free main SRAM for the heap. CCM (0x10000000) is reachable by the CPU
+     * and exception stacking ONLY — it is NOT DMA-accessible. Never place a
+     * buffer touched by DMA (modem/SPI/SPIF/socket/serial-RX) here. NOLOAD =>
+     * startup does NOT zero-init this section, so only tag write-before-read
+     * data or memset it at init. Populated via CCM_RAM (utilities/ccm_ram.h),
+     * which is a no-op on non-SML targets. */
+    .ccmram (NOLOAD) :
+    {
+        . = ALIGN(8);
+        __ccmram_start__ = .;
+        *(.ccmram)
+        *(.ccmram.*)
+        . = ALIGN(8);
+        __ccmram_end__ = .;
+    } > CCM
+
+    ASSERT(__ccmram_end__ <= ORIGIN(CCM) + LENGTH(CCM), "region CCM overflowed with .ccmram")
+
     .heap (COPY):
     {
         __end__ = .;
