@@ -27,7 +27,15 @@ extern "C" {
 
 #if DEVICE_CAN
 
+#if defined(CAN2_BASE)
+
+#define CAN_NUM 2 // Number of CAN peripherals present in the STM32 serie
+
+#else
+
 #define CAN_NUM 1 // Number of CAN peripherals present in the STM32 serie
+
+#endif
 
 #define CAN1_IRQ_RX_IRQN        CAN1_RX0_IRQn
 #define CAN1_IRQ_RX_VECT        CAN1_RX0_IRQHandler
@@ -39,6 +47,21 @@ extern "C" {
 #define CAN1_IRQ_PASSIVE_VECT   CAN1_SCE_IRQHandler
 #define CAN1_IRQ_BUS_IRQN       CAN1_SCE_IRQn
 #define CAN1_IRQ_BUS_VECT       CAN1_SCE_IRQHandler
+
+#if defined(CAN2_BASE)
+
+#define CAN2_IRQ_RX_IRQN        CAN2_RX0_IRQn
+#define CAN2_IRQ_RX_VECT        CAN2_RX0_IRQHandler
+#define CAN2_IRQ_TX_IRQN        CAN2_TX_IRQn
+#define CAN2_IRQ_TX_VECT        CAN2_TX_IRQHandler
+#define CAN2_IRQ_ERROR_IRQN     CAN2_SCE_IRQn
+#define CAN2_IRQ_ERROR_VECT     CAN2_SCE_IRQHandler
+#define CAN2_IRQ_PASSIVE_IRQN   CAN2_SCE_IRQn
+#define CAN2_IRQ_PASSIVE_VECT   CAN2_SCE_IRQHandler
+#define CAN2_IRQ_BUS_IRQN       CAN2_SCE_IRQn
+#define CAN2_IRQ_BUS_VECT       CAN2_SCE_IRQHandler
+
+#endif // CAN2_BASE
 
 #endif // DEVICE_CAN
 
